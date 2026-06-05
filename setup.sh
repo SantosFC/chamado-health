@@ -6,7 +6,7 @@ INSTALL_DIR="${HOME}/src/chamado-health"
 CONFIG_FILE="${HOME}/.config/chamado-health"
 
 if [[ -z "${HEALTHCHECK_URL:-}" ]]; then
-    read -rp "HEALTHCHECK_URL: " HEALTHCHECK_URL
+    read -rp "HEALTHCHECK_URL: " HEALTHCHECK_URL </dev/tty
 fi
 
 if [[ -d "${INSTALL_DIR}/.git" ]]; then
