@@ -4,11 +4,15 @@ set -euo pipefail
 REPO_URL="https://github.com/SantosFC/chamado-health.git"
 INSTALL_DIR="${HOME}/src/chamado-health"
 CONFIG_FILE="${HOME}/.config/chamado-health"
-INTERVAL="${HEALTHCHECK_INTERVAL:-1min}"
-
 if [[ -z "${HEALTHCHECK_URL:-}" ]]; then
     read -rp "HEALTHCHECK_URL: " HEALTHCHECK_URL </dev/tty
 fi
+
+if [[ -z "${HEALTHCHECK_INTERVAL:-}" ]]; then
+    read -rp "Intervalo do timer [1min]: " HEALTHCHECK_INTERVAL </dev/tty
+    HEALTHCHECK_INTERVAL="${HEALTHCHECK_INTERVAL:-1min}"
+fi
+INTERVAL="${HEALTHCHECK_INTERVAL}"
 
 if [[ -d "${INSTALL_DIR}/.git" ]]; then
     git -C "${INSTALL_DIR}" pull --ff-only
