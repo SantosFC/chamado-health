@@ -4,21 +4,31 @@ Simple health check script for Healthchecks.io, designed to run every minute usi
 
 ## Installation
 
-1. Copy the systemd unit files to `/etc/systemd/system/`:
+1. Copy the systemd unit files to your user systemd directory:
 
    ```bash
-   sudo cp systemd/chamado-health.service /etc/systemd/system/
-   sudo cp systemd/chamado-health.timer /etc/systemd/system/
+   mkdir -p ~/.config/systemd/user
+   cp systemd/chamado-health.service ~/.config/systemd/user/
+   cp systemd/chamado-health.timer ~/.config/systemd/user/
    ```
 
-2. Update the `HEALTHCHECK_URL` in the service unit or set it in `/etc/default/chamado-health`.
+2. Update the `HEALTHCHECK_URL` in the service unit or set it in `~/.config/chamado-health`.
 
-3. Reload systemd and enable the timer:
+3. Reload the user daemon and enable the timer:
 
    ```bash
-   sudo systemctl daemon-reload
-   sudo systemctl enable --now chamado-health.timer
-   sudo systemctl status chamado-health.timer
+   systemctl --user daemon-reload
+   systemctl --user enable --now chamado-health.timer
+   systemctl --user status chamado-health.timer
+   ```
+
+4. If you change the service or timer unit later, reload the user daemon and restart the timer using the unit name (not the file path):
+
+   ```bash
+   systemctl --user daemon-reload
+   systemctl --user restart --now chamado-health.timer
+   systemctl --user list-timers --all | grep chamado-health
+   journalctl --user -u chamado-health.service -n 10 --no-pager
    ```
 
 ## Configuration
