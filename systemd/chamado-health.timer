@@ -1,8 +1,8 @@
 [Unit]
-Description=Run Chamado Health check every minute
+Description=Run Chamado Health check every 2 minutes
 
 [Timer]
-OnCalendar=minutely
+OnCalendar=*:0/2
 Persistent=true
 
 [Install]
