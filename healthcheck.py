@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 def load_url_from_config():
-    config_file = Path.home() / ".config" / "chamado-health"
+    config_file = Path.home() / ".config" / "health-monitor"
     if config_file.exists():
         for line in config_file.read_text().splitlines():
             if line.startswith("HEALTHCHECK_URL="):
@@ -17,7 +17,7 @@ def load_url_from_config():
 
 
 def ping(url: str, timeout: int) -> int:
-    req = urllib.request.Request(url, method="GET", headers={"User-Agent": "chamado-health/1.0"})
+    req = urllib.request.Request(url, method="GET", headers={"User-Agent": "health-monitor/1.0"})
     with urllib.request.urlopen(req, timeout=timeout) as response:
         return response.getcode()
 
@@ -25,7 +25,7 @@ def ping(url: str, timeout: int) -> int:
 def ping_fail(url: str, timeout: int) -> None:
     fail_url = url.rstrip("/") + "/fail"
     try:
-        req = urllib.request.Request(fail_url, method="GET", headers={"User-Agent": "chamado-health/1.0"})
+        req = urllib.request.Request(fail_url, method="GET", headers={"User-Agent": "health-monitor/1.0"})
         urllib.request.urlopen(req, timeout=timeout)
     except Exception:
         pass

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="https://github.com/SantosFC/chamado-health.git"
-INSTALL_DIR="${HOME}/src/chamado-health"
-CONFIG_FILE="${HOME}/.config/chamado-health"
+REPO_URL="https://github.com/SantosFC/health-monitor.git"
+INSTALL_DIR="${HOME}/src/health-monitor"
+CONFIG_FILE="${HOME}/.config/health-monitor"
 
 # 1. Verificar pré-requisitos
 for cmd in git python3 systemctl loginctl; do
