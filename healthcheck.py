@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import os
+import subprocess
 import sys
 import urllib.request
 import urllib.error
@@ -51,7 +52,21 @@ def main():
 
     device = os.environ.get("DEVICE_NAME") or config.get("DEVICE_NAME", "unknown")
     timeout = int(os.environ.get("HEALTHCHECK_TIMEOUT", 10))
-    body = json.dumps({"user": USER_NAME, "device": device}).encode()
+    try:
+        ips = subprocess.check_output(["hostname", "-I"], timeout=5).decode().split()
+    except Exception:
+        ips = []
+
+    try:
+        seconds = int(float(Path("/proc/uptime").read_text().split()[0]))
+        d, rem = divmod(seconds, 86400)
+        h, rem = divmod(rem, 3600)
+        m = rem // 60
+        uptime = f"{d}d {h}h {m}m"
+    except Exception:
+        uptime = "unknown"
+
+    body = json.dumps({"user": USER_NAME, "device": device, "ips": ips, "uptime": uptime}).encode()
 
     try:
         status = ping(url, body, timeout)
