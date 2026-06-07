@@ -25,7 +25,7 @@ def load_config():
 def ping(url: str, body: bytes, timeout: int) -> int:
     req = urllib.request.Request(
         url, data=body, method="POST",
-        headers={"User-Agent": "health-monitor/1.0", "Content-Type": "application/json"}
+        headers={"User-Agent": "health-monitor/1.0.1", "Content-Type": "application/json"}
     )
     with urllib.request.urlopen(req, timeout=timeout) as response:
         return response.getcode()
@@ -36,7 +36,7 @@ def ping_fail(url: str, body: bytes, timeout: int) -> None:
     try:
         req = urllib.request.Request(
             fail_url, data=body, method="POST",
-            headers={"User-Agent": "health-monitor/1.0", "Content-Type": "application/json"}
+            headers={"User-Agent": "health-monitor/1.0.1", "Content-Type": "application/json"}
         )
         urllib.request.urlopen(req, timeout=timeout)
     except Exception:
