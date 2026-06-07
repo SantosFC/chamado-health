@@ -1,71 +1,78 @@
 #!/usr/bin/env python3
-import json
 import os
 import sys
-import urllib.error
 import urllib.request
+import urllib.error
 from datetime import datetime, timezone
 from pathlib import Path
 
-PAYLOAD = json.dumps({"name": "Ronaldo Freitas Dias"}).encode()
+USER_NAME = "Ronaldo Freitas Dias"
 
 
-def load_url_from_config():
-    config_file = Path.home() / ".config" / "health-check"
+def load_config():
+    config_file = Path.home() / ".config" / "health-monitor"
+    config = {}
     if config_file.exists():
         for line in config_file.read_text().splitlines():
-            if line.startswith("HEALTHCHECK_URL="):
-                return line.split("=", 1)[1].strip()
-    return None
+            if "=" in line:
+                key, value = line.split("=", 1)
+                config[key.strip()] = value.strip()
+    return config
 
 
-HEADERS = {"User-Agent": "health-check/1.0", "Content-Type": "application/json"}
-
-
-def ping(url: str, timeout: int) -> int:
-    req = urllib.request.Request(url, data=PAYLOAD, method="GET", headers=HEADERS)
+def ping(url: str, body: bytes, timeout: int) -> int:
+    req = urllib.request.Request(
+        url, data=body, method="POST",
+        headers={"User-Agent": "health-monitor/1.0", "Content-Type": "text/plain"}
+    )
     with urllib.request.urlopen(req, timeout=timeout) as response:
         return response.getcode()
 
 
-def ping_fail(url: str, timeout: int) -> None:
+def ping_fail(url: str, body: bytes, timeout: int) -> None:
     fail_url = url.rstrip("/") + "/fail"
     try:
-        req = urllib.request.Request(fail_url, data=PAYLOAD, method="GET", headers=HEADERS)
+        req = urllib.request.Request(
+            fail_url, data=body, method="POST",
+            headers={"User-Agent": "health-monitor/1.0", "Content-Type": "text/plain"}
+        )
         urllib.request.urlopen(req, timeout=timeout)
     except Exception:
         pass
 
 
 def main():
-    url = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("HEALTHCHECK_URL") or load_url_from_config()
+    config = load_config()
+    url = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("HEALTHCHECK_URL") or config.get("HEALTHCHECK_URL")
     if not url:
         print("ERROR: HEALTHCHECK_URL not set", file=sys.stderr)
         return 1
 
+    device = os.environ.get("DEVICE_NAME") or config.get("DEVICE_NAME", "unknown")
     timeout = int(os.environ.get("HEALTHCHECK_TIMEOUT", 10))
+    body = f"user={USER_NAME}\ndevice={device}".encode()
 
     try:
-        status = ping(url, timeout)
+        status = ping(url, body, timeout)
         if 200 <= status < 300:
-            print(f"{datetime.now(timezone.utc).isoformat()} status={status} url={url}")
+            print(f"{datetime.now(timezone.utc).isoformat()} status={status} device={device} url={url}")
             return 0
 
         print(f"ERROR: HTTP {status} url={url}", file=sys.stderr)
-        ping_fail(url, timeout)
+        ping_fail(url, body, timeout)
         return 2
 
     except urllib.error.HTTPError as exc:
         print(f"HTTPError {exc.code} {exc.reason} url={url}", file=sys.stderr)
-        ping_fail(url, timeout)
+        ping_fail(url, body, timeout)
         return 3
     except urllib.error.URLError as exc:
         print(f"URLError {exc.reason} url={url}", file=sys.stderr)
-        ping_fail(url, timeout)
+        ping_fail(url, body, timeout)
         return 4
     except Exception as exc:
         print(f"ERROR {exc} url={url}", file=sys.stderr)
-        ping_fail(url, timeout)
+        ping_fail(url, body, timeout)
         return 5
 
 

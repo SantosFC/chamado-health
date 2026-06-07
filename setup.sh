@@ -31,25 +31,30 @@ except Exception as e:
     [[ "$confirm" =~ ^[sS]$ ]] || { echo "Instalação cancelada."; exit 1; }
 fi
 
-# 4. Clonar ou atualizar repositório
+# 4. Capturar nome do device
+if [[ -z "${DEVICE_NAME:-}" ]]; then
+    read -rp "Nome do device: " DEVICE_NAME </dev/tty
+fi
+
+# 5. Clonar ou atualizar repositório
 if [[ -d "${INSTALL_DIR}/.git" ]]; then
     git -C "${INSTALL_DIR}" pull --ff-only
 else
     git clone "${REPO_URL}" "${INSTALL_DIR}"
 fi
 
-# 5. Salvar configuração (confirmando antes de sobrescrever)
+# 6. Salvar configuração (confirmando antes de sobrescrever)
 if [[ -f "${CONFIG_FILE}" ]]; then
     echo "Configuração existente encontrada em ${CONFIG_FILE}."
     read -rp "Deseja substituir? [s/N] " confirm </dev/tty
     if [[ ! "$confirm" =~ ^[sS]$ ]]; then
         echo "Configuração mantida. Prosseguindo com valor existente."
     else
-        echo "HEALTHCHECK_URL=${HEALTHCHECK_URL}" > "${CONFIG_FILE}"
+        printf "HEALTHCHECK_URL=%s\nDEVICE_NAME=%s\n" "${HEALTHCHECK_URL}" "${DEVICE_NAME}" > "${CONFIG_FILE}"
         echo "Configuração salva em ${CONFIG_FILE}."
     fi
 else
-    echo "HEALTHCHECK_URL=${HEALTHCHECK_URL}" > "${CONFIG_FILE}"
+    printf "HEALTHCHECK_URL=%s\nDEVICE_NAME=%s\n" "${HEALTHCHECK_URL}" "${DEVICE_NAME}" > "${CONFIG_FILE}"
     echo "Configuração salva em ${CONFIG_FILE}."
 fi
 

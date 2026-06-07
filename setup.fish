@@ -36,25 +36,30 @@ except Exception as e:
     end
 end
 
-# 4. Clonar ou atualizar repositório
+# 4. Capturar nome do device
+if not set -q DEVICE_NAME
+    read -P "Nome do device: " DEVICE_NAME
+end
+
+# 5. Clonar ou atualizar repositório
 if test -d "$INSTALL_DIR/.git"
     git -C $INSTALL_DIR pull --ff-only
 else
     git clone $REPO_URL $INSTALL_DIR
 end
 
-# 5. Salvar configuração (confirmando antes de sobrescrever)
+# 6. Salvar configuração (confirmando antes de sobrescrever)
 if test -f $CONFIG_FILE
     echo "Configuração existente encontrada em $CONFIG_FILE."
     read -P "Deseja substituir? [s/N] " confirm
     if string match -qi 's' $confirm
-        echo "HEALTHCHECK_URL=$HEALTHCHECK_URL" > $CONFIG_FILE
+        printf "HEALTHCHECK_URL=%s\nDEVICE_NAME=%s\n" $HEALTHCHECK_URL $DEVICE_NAME > $CONFIG_FILE
         echo "Configuração salva em $CONFIG_FILE."
     else
         echo "Configuração mantida. Prosseguindo com valor existente."
     end
 else
-    echo "HEALTHCHECK_URL=$HEALTHCHECK_URL" > $CONFIG_FILE
+    printf "HEALTHCHECK_URL=%s\nDEVICE_NAME=%s\n" $HEALTHCHECK_URL $DEVICE_NAME > $CONFIG_FILE
     echo "Configuração salva em $CONFIG_FILE."
 end
 
