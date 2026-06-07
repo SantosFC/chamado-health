@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 import os
 import sys
 import urllib.request
@@ -23,7 +24,7 @@ def load_config():
 def ping(url: str, body: bytes, timeout: int) -> int:
     req = urllib.request.Request(
         url, data=body, method="POST",
-        headers={"User-Agent": "health-monitor/1.0", "Content-Type": "text/plain"}
+        headers={"User-Agent": "health-monitor/1.0", "Content-Type": "application/json"}
     )
     with urllib.request.urlopen(req, timeout=timeout) as response:
         return response.getcode()
@@ -34,7 +35,7 @@ def ping_fail(url: str, body: bytes, timeout: int) -> None:
     try:
         req = urllib.request.Request(
             fail_url, data=body, method="POST",
-            headers={"User-Agent": "health-monitor/1.0", "Content-Type": "text/plain"}
+            headers={"User-Agent": "health-monitor/1.0", "Content-Type": "application/json"}
         )
         urllib.request.urlopen(req, timeout=timeout)
     except Exception:
@@ -50,7 +51,7 @@ def main():
 
     device = os.environ.get("DEVICE_NAME") or config.get("DEVICE_NAME", "unknown")
     timeout = int(os.environ.get("HEALTHCHECK_TIMEOUT", 10))
-    body = f"user={USER_NAME}\ndevice={device}".encode()
+    body = json.dumps({"user": USER_NAME, "device": device}).encode()
 
     try:
         status = ping(url, body, timeout)
