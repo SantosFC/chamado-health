@@ -1,0 +1,8 @@
+# shellcheck configuration
+shell=bash
+enable=all
+severity=warning
+
+# SC2312: Ignore "consider invoking separately to avoid masking return values"
+# (common pattern with command -v in this project)
+disable=SC2312

@@ -1,0 +1,20 @@
+[tool.ruff]
+target-version = "py39"
+line-length = 110
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "B904", # raise from exc — não obrigatório em scripts simples
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["healthcheck"]

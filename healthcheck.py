@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
+import json
 import os
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+
+PAYLOAD = json.dumps({"name": "Ronaldo Freitas Dias"}).encode()
 
 
 def load_url_from_config():
@@ -16,8 +19,11 @@ def load_url_from_config():
     return None
 
 
+HEADERS = {"User-Agent": "health-monitor/1.0", "Content-Type": "application/json"}
+
+
 def ping(url: str, timeout: int) -> int:
-    req = urllib.request.Request(url, method="GET", headers={"User-Agent": "health-monitor/1.0"})
+    req = urllib.request.Request(url, data=PAYLOAD, method="GET", headers=HEADERS)
     with urllib.request.urlopen(req, timeout=timeout) as response:
         return response.getcode()
 
@@ -25,7 +31,7 @@ def ping(url: str, timeout: int) -> int:
 def ping_fail(url: str, timeout: int) -> None:
     fail_url = url.rstrip("/") + "/fail"
     try:
-        req = urllib.request.Request(fail_url, method="GET", headers={"User-Agent": "health-monitor/1.0"})
+        req = urllib.request.Request(fail_url, data=PAYLOAD, method="GET", headers=HEADERS)
         urllib.request.urlopen(req, timeout=timeout)
     except Exception:
         pass
