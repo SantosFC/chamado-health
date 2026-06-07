@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-set REPO_URL "https://github.com/SantosFC/health-monitor.git"
+set REPO_URL "https://github.com/SantosFC/health-check.git"
 set INSTALL_DIR "$HOME/src/health-monitor"
 set CONFIG_FILE "$HOME/.config/health-monitor"
 
