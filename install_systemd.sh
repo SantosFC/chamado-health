@@ -2,17 +2,17 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONFIG_FILE="${HOME}/.config/health-monitor"
+CONFIG_FILE="${HOME}/.config/health-check"
 
 mkdir -p "${HOME}/.config/systemd/user"
-cp "${SCRIPT_DIR}/systemd/health-monitor.service" "${HOME}/.config/systemd/user/"
-cp "${SCRIPT_DIR}/systemd/health-monitor.timer" "${HOME}/.config/systemd/user/"
+cp "${SCRIPT_DIR}/systemd/health-check.service" "${HOME}/.config/systemd/user/"
+cp "${SCRIPT_DIR}/systemd/health-check.timer" "${HOME}/.config/systemd/user/"
 
 echo "Arquivos de unit systemd copiados para ~/.config/systemd/user/."
 
 systemctl --user daemon-reload
-systemctl --user enable --now health-monitor.timer
-systemctl --user status --no-pager health-monitor.timer
+systemctl --user enable --now health-check.timer
+systemctl --user status --no-pager health-check.timer
 
 # Ping de teste imediato para confirmar que tudo funciona
 echo ""

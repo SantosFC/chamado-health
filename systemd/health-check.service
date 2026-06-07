@@ -1,12 +1,12 @@
 [Unit]
-Description=Health Monitor check script
+Description=Health check script
 Wants=network-online.target
 After=network-online.target
 
 [Service]
 Type=oneshot
-EnvironmentFile=-%h/.config/health-monitor
-ExecStart=/usr/bin/env python3 %h/src/health-monitor/healthcheck.py
+EnvironmentFile=-%h/.config/health-check
+ExecStart=/usr/bin/env python3 %h/src/health-check/healthcheck.py
 StandardOutput=journal
 StandardError=journal
 

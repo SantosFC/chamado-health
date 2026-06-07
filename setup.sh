@@ -2,8 +2,8 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/SantosFC/health-check.git"
-INSTALL_DIR="${HOME}/src/health-monitor"
-CONFIG_FILE="${HOME}/.config/health-monitor"
+INSTALL_DIR="${HOME}/src/health-check"
+CONFIG_FILE="${HOME}/.config/health-check"
 
 # 1. Verificar pré-requisitos
 for cmd in git python3 systemctl loginctl; do

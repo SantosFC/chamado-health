@@ -11,7 +11,7 @@ PAYLOAD = json.dumps({"name": "Ronaldo Freitas Dias"}).encode()
 
 
 def load_url_from_config():
-    config_file = Path.home() / ".config" / "health-monitor"
+    config_file = Path.home() / ".config" / "health-check"
     if config_file.exists():
         for line in config_file.read_text().splitlines():
             if line.startswith("HEALTHCHECK_URL="):
@@ -19,7 +19,7 @@ def load_url_from_config():
     return None
 
 
-HEADERS = {"User-Agent": "health-monitor/1.0", "Content-Type": "application/json"}
+HEADERS = {"User-Agent": "health-check/1.0", "Content-Type": "application/json"}
 
 
 def ping(url: str, timeout: int) -> int:

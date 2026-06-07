@@ -1,5 +1,5 @@
 [Unit]
-Description=Run Health Monitor check every 2 minutes
+Description=Run health check every 2 minutes
 
 [Timer]
 OnCalendar=*:0/2
