@@ -2,6 +2,64 @@
 
 This document defines the standard payload for all health check pings sent to Healthchecks.io across all agents (scripts, bots, services).
 
+## Why not use an existing library?
+
+The [`healthchecks-io`](https://pypi.org/project/healthchecks-io/) package on PyPI focuses on the management API and does not send a custom body payload. This library fills that gap with an opinionated, consistent payload that identifies the agent, device, IPs, and uptime on every ping.
+
+---
+
+## Using as a Python module
+
+Install directly from the repository:
+
+```bash
+pip install git+https://github.com/SantosFC/health-check.git
+```
+
+### Basic usage
+
+```python
+from health_check import ping, ping_fail
+
+url = "https://hc-ping.com/<your-uuid>"
+
+try:
+    status = ping(url, agent="my-telegram-bot", device="my-server")
+    if 200 <= status < 300:
+        print("Ping OK")
+    else:
+        ping_fail(url, agent="my-telegram-bot", device="my-server")
+except Exception as exc:
+    ping_fail(url, agent="my-telegram-bot", device="my-server")
+    raise
+```
+
+### Loading config from file
+
+```python
+from health_check import load_config, ping
+
+config = load_config()  # reads ~/.config/health-check
+ping(config["HEALTHCHECK_URL"], agent="my-bot", device=config["DEVICE_NAME"])
+```
+
+### Custom config path
+
+```python
+from pathlib import Path
+from health_check import load_config
+
+config = load_config(config_file=Path("/etc/my-bot/config"))
+```
+
+### Timeout
+
+```python
+ping(url, agent="my-bot", device="server", timeout=5)
+```
+
+---
+
 ## HTTP Request
 
 - **Method:** `POST`
@@ -11,15 +69,8 @@ This document defines the standard payload for all health check pings sent to He
 
 | Header | Value |
 |---|---|
-| `User-Agent` | `<service-name>/<version>` |
+| `User-Agent` | `health-check/<version>` |
 | `Content-Type` | `application/json` |
-
-The `User-Agent` must identify the agent and its version. Examples:
-
-```
-health-check/1.0.2
-telegram-bot-alerts/2.1.0
-```
 
 ## Body
 
@@ -52,4 +103,4 @@ telegram-bot-alerts/2.1.0
 
 ## Failure Ping
 
-On error, agents must send a POST to `<uuid>/fail` with the same body.
+On error, agents must send a POST to `<uuid>/fail` with the same body. The `ping_fail` function handles this automatically.
