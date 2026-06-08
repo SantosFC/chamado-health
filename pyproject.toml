@@ -1,3 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "health-check"
+version = "1.0.2"
+description = "Lightweight Healthchecks.io ping client with opinionated payload (agent, device, ips, uptime)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = []
+
+[project.scripts]
+health-check = "healthcheck:main"
+
 [tool.ruff]
 target-version = "py39"
 line-length = 110
@@ -13,8 +29,8 @@ select = [
     "SIM", # flake8-simplify
 ]
 ignore = [
-    "B904", # raise from exc — não obrigatório em scripts simples
+    "B904",
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["healthcheck"]
+known-first-party = ["health_check"]
