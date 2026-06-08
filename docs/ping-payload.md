@@ -104,3 +104,30 @@ ping(url, agent="my-bot", device="server", timeout=5)
 ## Failure Ping
 
 On error, agents must send a POST to `<uuid>/fail` with the same body. The `ping_fail` function handles this automatically.
+
+---
+
+## Telegram Notifications
+
+Healthchecks.io includes the ping body as **Last Ping Body** in Telegram notifications (UP, DOWN, and failure events). The body is displayed as raw JSON with syntax highlighting.
+
+Example of what appears in the Telegram message:
+
+```
+🟢 The check mySoccer is now UP.
+
+Project: FastAPI
+Tags: Telegram, Soccer
+Period: 2 minutes
+Total Pings: 860
+Last Ping: Success, a second ago
+Last Ping Body:
+{"user":"ronaldo","device":"sandbox","ips":["192.168.122.71","fe80::f9f:d854:2bed:e454","100.70.8.112"],"uptime":"0d 2h 47m"}
+```
+
+### Implications for payload design
+
+- Keep field names short and meaningful — they appear directly in the notification
+- `user` identifies who sent the ping (agent name)
+- `device` and `uptime` give immediate context for diagnosing incidents without leaving Telegram
+- Avoid sensitive data in the body (IPs are acceptable; avoid tokens or passwords)
