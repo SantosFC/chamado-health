@@ -4,7 +4,32 @@ Simple health check script for Healthchecks.io, designed to run every minute usi
 
 ## Installation
 
-Run the setup script:
+### 1. Install Git
+
+```bash
+# Debian/Ubuntu
+sudo apt update && sudo apt install -y git python3
+
+# RHEL/CentOS/Fedora
+sudo dnf install -y git python3
+```
+
+### 2. Configure Git identity
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+```
+
+### 3. Clone the repository
+
+```bash
+mkdir -p ~/src
+git clone https://github.com/SantosFC/health-check.git ~/src/health-monitor
+cd ~/src/health-monitor
+```
+
+### 4. Run the setup script
 
 ```bash
 bash setup.sh
@@ -13,12 +38,14 @@ bash setup.sh
 The script will:
 1. Ask for your `HEALTHCHECK_URL` (Healthchecks.io ping endpoint) and validate it.
 2. Ask for a `DEVICE_NAME` to identify this machine.
-3. Clone the repository to `~/src/health-monitor`.
-4. Save the configuration to `~/.config/health-monitor`.
-5. Install and enable the systemd timer via `install_systemd.sh`.
-6. Run a test ping to confirm everything works.
+3. Save the configuration to `~/.config/health-monitor`.
+4. Install and enable the systemd timer.
+5. Run a test ping to confirm everything works.
 
-> Both `HEALTHCHECK_URL` and `DEVICE_NAME` can be pre-set as environment variables to skip the interactive prompts.
+> Both `HEALTHCHECK_URL` and `DEVICE_NAME` can be pre-set as environment variables to skip the interactive prompts:
+> ```bash
+> HEALTHCHECK_URL=https://hc-ping.com/<your-uuid> DEVICE_NAME=my-machine bash setup.sh
+> ```
 
 ## Configuration
 
