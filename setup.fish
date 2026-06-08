@@ -1,8 +1,8 @@
 #!/usr/bin/env fish
 
 set REPO_URL "https://github.com/SantosFC/health-check.git"
-set INSTALL_DIR "$HOME/src/health-monitor"
-set CONFIG_FILE "$HOME/.config/health-monitor"
+set INSTALL_DIR "$HOME/src/health-check"
+set CONFIG_FILE "$HOME/.config/health-check"
 
 # 1. Verificar pré-requisitos
 for cmd in git python3 systemctl loginctl

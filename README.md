@@ -25,8 +25,8 @@ git config --global user.email "you@example.com"
 
 ```bash
 mkdir -p ~/src
-git clone https://github.com/SantosFC/health-check.git ~/src/health-monitor
-cd ~/src/health-monitor
+git clone https://github.com/SantosFC/health-check.git ~/src/health-check
+cd ~/src/health-check
 ```
 
 ### 4. Run the setup script
@@ -38,7 +38,7 @@ bash setup.sh
 The script will:
 1. Ask for your `HEALTHCHECK_URL` (Healthchecks.io ping endpoint) and validate it.
 2. Ask for a `DEVICE_NAME` to identify this machine.
-3. Save the configuration to `~/.config/health-monitor`.
+3. Save the configuration to `~/.config/health-check`.
 4. Install and enable the systemd timer.
 5. Run a test ping to confirm everything works.
 
@@ -49,7 +49,7 @@ The script will:
 
 ## Configuration
 
-The configuration file is `~/.config/health-monitor`:
+The configuration file is `~/.config/health-check`:
 
 ```
 HEALTHCHECK_URL=https://hc-ping.com/<your-uuid>
