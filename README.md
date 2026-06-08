@@ -4,41 +4,52 @@ Simple health check script for Healthchecks.io, designed to run every minute usi
 
 ## Installation
 
-1. Copy the systemd unit files to your user systemd directory:
+Run the setup script:
 
-   ```bash
-   mkdir -p ~/.config/systemd/user
-   cp systemd/chamado-health.service ~/.config/systemd/user/
-   cp systemd/chamado-health.timer ~/.config/systemd/user/
-   ```
+```bash
+bash setup.sh
+```
 
-2. Update the `HEALTHCHECK_URL` in the service unit or set it in `~/.config/chamado-health`.
+The script will:
+1. Ask for your `HEALTHCHECK_URL` (Healthchecks.io ping endpoint) and validate it.
+2. Ask for a `DEVICE_NAME` to identify this machine.
+3. Clone the repository to `~/src/health-monitor`.
+4. Save the configuration to `~/.config/health-monitor`.
+5. Install and enable the systemd timer via `install_systemd.sh`.
+6. Run a test ping to confirm everything works.
 
-3. Reload the user daemon and enable the timer:
-
-   ```bash
-   systemctl --user daemon-reload
-   systemctl --user enable --now chamado-health.timer
-   systemctl --user status chamado-health.timer
-   ```
-
-4. If you change the service or timer unit later, reload the user daemon and restart the timer using the unit name (not the file path):
-
-   ```bash
-   systemctl --user daemon-reload
-   systemctl --user restart --now chamado-health.timer
-   systemctl --user list-timers --all | grep chamado-health
-   journalctl --user -u chamado-health.service -n 10 --no-pager
-   ```
+> Both `HEALTHCHECK_URL` and `DEVICE_NAME` can be pre-set as environment variables to skip the interactive prompts.
 
 ## Configuration
 
-- `HEALTHCHECK_URL` must be set to your Healthchecks.io ping endpoint.
-- You can also pass the URL as a command-line argument to the script:
+The configuration file is `~/.config/health-monitor`:
 
-  ```bash
-  ./healthcheck.py https://hc-ping.com/<your-uuid>
-  ```
+```
+HEALTHCHECK_URL=https://hc-ping.com/<your-uuid>
+DEVICE_NAME=my-machine
+```
+
+You can also pass the URL as a command-line argument to the script:
+
+```bash
+./healthcheck.py https://hc-ping.com/<your-uuid>
+```
+
+## Systemd units
+
+The unit files installed to `~/.config/systemd/user/` are:
+
+- `health-check.service`
+- `health-check.timer`
+
+To reload and restart after changes:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user restart health-check.timer
+systemctl --user list-timers --all | grep health-check
+journalctl --user -u health-check.service -n 10 --no-pager
+```
 
 ## Script behavior
 
